@@ -147,3 +147,14 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'dbmasteruser',
+        'PASSWORD': 'O;tCU=q1*J44,=kiMw~+03.tqm{l[wM$',
+        'HOST': 'ls-b3ec4ef43666350e21ff743e5552c9ab8ca60c9d.cxkkg4wwmhun.ap-northeast-2.rds.amazonaws.com',  # ✅ RDS 엔드포인트
+        'PORT': '5432',
+    }
+}
