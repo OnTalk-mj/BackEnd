@@ -1,48 +1,78 @@
-from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import UserSignupSerializer, UserLoginSerializer
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import Signup, Login, Profile
-from .models import User
 
-@api_view(['POST'])
-def signup(request):
-    serializer = Signup(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({"message": "회원가입 성공!"}, status=201)
-    return Response(serializer.errors, status=400)
+class SignupView(APIView):
+    def post(self, request):
+        serializer = UserSignupSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "회원가입이 완료되었습니다!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-def profile(request):
-    user = request.user
-    if user.is_authenticated:
-        return Response({
+class LoginView(APIView):
+    def post(self, request):
+        serializer = UserLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class IDCheckView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        if not username:
+            return Response({"error": "username is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        exists = User.objects.filter(username=username).exists()
+        return Response({"exists": exists}, status=status.HTTP_200_OK)
+
+class UserInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        user_data = {
             "username": user.username,
             "email": user.email,
-            "name": user.name,
-            "birth": user.birth,
-            "phone": user.phone,
-            "address": user.address,
-            "zipcode": user.zipcode
-        })
-    return Response({"error": "인증되지 않음"}, status=401)
+            "phone": getattr(user, 'phone', None),
+        }
+        return Response(user_data, status=status.HTTP_200_OK)
 
-class LoginView(TokenObtainPairView):
-    serializer_class = Login
+class UserUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_user_profile(request):
-    serializer = Profile(request.user)
-    return Response(serializer.data)
+    def patch(self, request):
+        user = request.user
 
-@api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def update_user_profile(request):
-    serializer = Profile(request.user, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=400)
+        name = request.data.get('name')
+        birthdate = request.data.get('birthdate')
+        phone = request.data.get('phone')
+        address = request.data.get('address')
+        zipcode = request.data.get('zipcode')
+
+        if name:
+            user.name = name
+        if birthdate:
+            user.birthdate = birthdate
+        if phone:
+            user.phone = phone
+        if address:
+            user.address = address
+        if zipcode:
+            user.zipcode = zipcode
+
+        user.save()
+
+        return Response({"message": "회원 정보가 수정되었습니다!"}, status=status.HTTP_200_OK)
