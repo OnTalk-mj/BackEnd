@@ -1,54 +1,47 @@
 from rest_framework import serializers
+from django.contrib.auth import authenticate
 from .models import User
-from django.contrib.auth.password_validation import validate_password
-from rest_framework_simplejwt.tokens import RefreshToken
 
-class Profile(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'name', 'birth', 'phone', 'address', 'zipcode']
-        read_only_fields = ['username', 'email']
-
-class Signup(serializers.ModelSerializer):
+class UserSignupSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'password2', 'name', 'birth', 'phone', 'address', 'zipcode']
+        fields = ('email', 'password', 'password2', 'name', 'birth', 'phone', 'address', 'zipcode')
 
-    def validate(self, data):
-        if data['password'] != data['password2']:
-            raise serializers.ValidationError("비밀번호가 일치하지 않습니다.")
-        validate_password(data['password'])
-        return data
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "비밀번호가 일치하지 않습니다!"})
+        return attrs
 
     def create(self, validated_data):
         validated_data.pop('password2')
+        email = validated_data.get('email')
+        validated_data['username'] = email
+
         user = User.objects.create_user(**validated_data)
         return user
 
-class Login(serializers.Serializer):
+class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
-    def validate(self, attrs):
-        email = attrs.get('email')
-        password = attrs.get('password')
+    def validate(self, data):
+        email = data.get('email')
+        password = data.get('password')
 
         try:
-            user = User.objects.get(email=email)
+            user_obj = User.objects.get(email=email)
         except User.DoesNotExist:
-            raise serializers.ValidationError({"email": "등록된 이메일이 없습니다."})
+            raise serializers.ValidationError("존재하지 않는 이메일입니다.")
 
-        if not user.check_password(password):
-            raise serializers.ValidationError({"password": "비밀번호가 틀렸습니다."})
+        if not user_obj.check_password(password):
+            raise serializers.ValidationError("비밀번호가 올바르지 않습니다.")
 
-        if not user.is_active:
-            raise serializers.ValidationError({"email": "비활성화된 계정입니다."})
-
-        refresh = RefreshToken.for_user(user)
+        if not user_obj.is_active:
+            raise serializers.ValidationError("비활성화된 계정입니다.")
 
         return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
+            'user': user_obj
         }
