@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'accounts',
+    'centers',
 ]
 
 MIDDLEWARE = [
@@ -154,7 +155,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'dbmasteruser',
         'PASSWORD': 'O;tCU=q1*J44,=kiMw~+03.tqm{l[wM$',
-        'HOST': 'ls-b3ec4ef43666350e21ff743e5552c9ab8ca60c9d.cxkkg4wwmhun.ap-northeast-2.rds.amazonaws.com',  # ✅ RDS 엔드포인트
+        'HOST': 'ls-b3ec4ef43666350e21ff743e5552c9ab8ca60c9d.cxkkg4wwmhun.ap-northeast-2.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
