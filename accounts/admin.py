@@ -14,6 +14,7 @@ class UserAdmin(BaseUserAdmin):
         ('권한', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
     )
 
+    # user 대신 email 사용
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
