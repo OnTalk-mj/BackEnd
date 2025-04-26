@@ -3,13 +3,13 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ('id', 'username', 'email', 'name', 'birth', 'phone', 'is_staff')
+    list_display = ('id', 'email', 'name', 'birth', 'phone', 'is_staff')
     list_filter = ('is_staff', 'is_superuser')
-    search_fields = ('username', 'email', 'name')
+    search_fields = ('email', 'name')
     ordering = ('id',)
 
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
+        (None, {'fields': ('email', 'password')}),
         ('개인정보', {'fields': ('name', 'birth', 'phone', 'address', 'zipcode')}),
         ('권한', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
     )
@@ -17,7 +17,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2'),
+            'fields': ('email', 'password1', 'password2'),  # username 대신 email
         }),
     )
 
