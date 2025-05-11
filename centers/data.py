@@ -15,4 +15,3 @@ def import_data():
                 latitude=None,
                 longitude=None
             )
-    print("✅ CSV 데이터 삽입 완료")
