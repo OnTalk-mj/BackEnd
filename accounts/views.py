@@ -25,16 +25,16 @@ class LoginView(APIView):
             })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class EmailCheckView(APIView):
+class IDCheckView(APIView):
     def post(self, request):
-        email = request.data.get('email')
-        if not email:
-            return Response({"error": "email is required."}, status=status.HTTP_400_BAD_REQUEST)
+        username = request.data.get('username')
+        if not username:
+            return Response({"error": "username is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         from django.contrib.auth import get_user_model
         User = get_user_model()
 
-        exists = User.objects.filter(email=email).exists()
+        exists = User.objects.filter(username=username).exists()
         return Response({"exists": exists}, status=status.HTTP_200_OK)
 
 class UserInfoView(APIView):
