@@ -31,16 +31,17 @@ class UserLoginSerializer(serializers.Serializer):
         email = data.get('email')
         password = data.get('password')
 
-        if email and password:
-            user = authenticate(
-                request=self.context.get('request'),  # 🔥 context의 request 넘기기
-                email=email,
-                password=password
-            )
-            if not user:
-                raise serializers.ValidationError("잘못된 로그인 정보입니다.")
-        else:
-            raise serializers.ValidationError("이메일과 비밀번호를 모두 입력해주세요.")
+        try:
+            user_obj = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("존재하지 않는 이메일입니다.")
 
-        data['user'] = user
-        return data
+        if not user_obj.check_password(password):
+            raise serializers.ValidationError("비밀번호가 올바르지 않습니다.")
+
+        if not user_obj.is_active:
+            raise serializers.ValidationError("비활성화된 계정입니다.")
+
+        return {
+            'user': user_obj
+        }
