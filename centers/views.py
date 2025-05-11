@@ -17,7 +17,11 @@ class CounselingCenterListView(APIView):
             centers = centers.filter(region__icontains=region)
 
         if keyword:
-            centers = centers.filter(name__icontains=keyword)
+            centers = centers.filter(
+                Q(name__icontains=keyword) |
+                Q(address__icontains=keyword) |
+                Q(phone__icontains=keyword)
+            )
 
         if fields:
             field_list = fields.split(",")
