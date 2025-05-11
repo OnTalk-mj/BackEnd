@@ -1,6 +1,7 @@
 # 로컬 환경 세팅 가이드
 
 ## 0. api키는 카카오톡에서 주신 파일 안에 있습니다.
+## 프론트 : npm start, 백 : python manage.py, FastAPI: uvicorn backend.main:app --reload --port 8001
 ```bash
 # OpenAI API 키 설정
 client = OpenAI(api_key="")
