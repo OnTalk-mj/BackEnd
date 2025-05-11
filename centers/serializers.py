@@ -4,4 +4,4 @@ from .models import CounselingCenter
 class CounselingCenterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CounselingCenter
-        fields = ['id', 'name', 'region', 'category', 'phone', 'address', 'latitude', 'longitude']
+        fields = ['id', 'region', 'name', 'category', 'address', 'phone', 'website', 'latitude', 'longitude']
