@@ -1,5 +1,11 @@
 # 로컬 환경 세팅 가이드
 
+## 0. api키는 카카오톡에서 주신 파일 안에 있습니다.
+```bash
+# OpenAI API 키 설정
+client = OpenAI(api_key="")
+```
+
 ## 1. 프로젝트 클론
 ```bash
 git clone https://github.com/OnTalk-mj/BackEnd.git
