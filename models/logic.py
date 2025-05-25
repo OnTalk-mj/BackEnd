@@ -4,8 +4,22 @@
 import json
 import random
 import os
+<<<<<<< HEAD
 from openai import OpenAI
 
+=======
+import re
+from openai import OpenAI
+
+config_path = os.path.join(os.path.dirname(__file__), "../config/openai_config.json")
+
+with open(config_path, "r") as f:
+    config = json.load(f)
+    api_key = config.get("api_key")
+
+    client = OpenAI(api_key=api_key)
+
+>>>>>>> chatbot
 # 유튜브 영상 추천 JSON 불러오기
 base_dir = os.path.dirname(os.path.abspath(__file__))
 json_path = os.path.join(base_dir, "..", "final_video_recommendations_clean.json")
@@ -82,4 +96,29 @@ def generate_video_response(emotion, danger, video_links):
         temperature=0.75,
         max_tokens=400
     )
+<<<<<<< HEAD
     return result.choices[0].message.content.strip()
+=======
+    return convert_links_to_iframe(result.choices[0].message.content.strip())
+
+def convert_links_to_iframe(text):
+    pattern = r"(https:\/\/(?:www\.)?youtube\.com\/watch\?v=|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]{11})"
+    return re.sub(
+    pattern,
+    lambda m: f'''
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <iframe
+                width="100%"
+                height="600"
+                src="https://www.youtube.com/embed/{m.group(2)}"
+                title="YouTube video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                style="border-radius: 8px;"
+            ></iframe>
+        </div>
+    ''',
+    text
+)
+>>>>>>> chatbot

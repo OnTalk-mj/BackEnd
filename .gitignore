@@ -6,3 +6,5 @@ db.sqlite3
 .env
 .idea/
 workspace.xml
+config/openai_config.json
+model/*.safetensors

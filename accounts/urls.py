@@ -4,7 +4,7 @@ from .views import SignupView, LoginView, EmailCheckView, UserInfoView, UserUpda
 urlpatterns = [
     path('signup/', SignupView.as_view(), name='signup'),
     path('login/', LoginView.as_view(), name='login'),
-    path('email-check/', EmailCheckView.as_view(), name='email-check'),\
+    path('id-check/', EmailCheckView.as_view(), name='id-check'),
     path('mypage/', UserInfoView.as_view(), name='userinfo'),
     path('mypage/update/', UserUpdateView.as_view(), name='userinfo-update'),
 ]

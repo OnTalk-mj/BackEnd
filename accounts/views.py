@@ -44,9 +44,12 @@ class UserInfoView(APIView):
         user = request.user
 
         user_data = {
-            "username": user.username,
+            "username": user.name,
             "email": user.email,
             "phone": getattr(user, 'phone', None),
+            "address": user.address,
+            "birthdate": user.birth,
+            "zipcode": user.zipcode
         }
         return Response(user_data, status=status.HTTP_200_OK)
 
