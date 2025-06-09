@@ -70,7 +70,9 @@ python manage.py runserver
 | ID 중복 검사 | POST | `/api/accounts/id-check/` | ❌ | username 중복 여부 확인 |
 | 내 정보 조회 | GET | `/api/accounts/mypage/` | ✅ | 현재 로그인한 사용자 정보 조회 |
 | 내 정보 수정 | PATCH | `/api/accounts/mypage/update/` | ✅ | 사용자 개인정보 수정 |
-| 상담센터 검색 | GET | `/api/consult/` | ❌ | 지역/키워드/상담 분야 필터 검색 |
+| 상담센터 검색 | GET | `/api/consult/` | ❌ | 지역/키워드 필터 검색 |
+| 유튜브 영상 추천 | POST | `/api/ai/recommend=videos/` | ❌ | 사용자 맞춤 영상 제공 |
+| 감정, 고민 기반 대화 제공 | POST | `/api/ai/counselor/` | ❌ | 감정 기반 AI 대화 제공 |
 
 ---
 
